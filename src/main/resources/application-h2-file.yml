@@ -1,0 +1,11 @@
+server.port: 8080
+
+
+spring:
+  config:
+    import: application-local.yml
+
+  jpa:
+    hibernate.ddl-auto: validate
+
+DB_URL: jdbc:h2:file:./db/task-manager

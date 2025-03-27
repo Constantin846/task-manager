@@ -1,0 +1,17 @@
+server.port: 8080
+
+
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: ${DB_URL:jdbc:h2:mem:tm};LOCK_TIMEOUT=60000
+    username: tm
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate.ddl-auto: validate # create, update, none and validate
+  database-platform: org.hibernate.dialect.H2Dialect
+  h2.console.enabled: true # http://localhost:8080/tm/v1/h2-console
+
+  liquibase:
+    enabled: true
