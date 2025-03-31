@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import tk.project.taskmanager.aspect.annotation.LogAroundMethod;
+import tk.project.taskmanager.aspect.annotation.LogCoverMethod;
 import tk.project.taskmanager.aspect.annotation.LogException;
 import tk.project.taskmanager.aspect.annotation.LogStartMethod;
 import tk.project.taskmanager.aspect.annotation.MeasureExecutionTime;
@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    @LogAroundMethod
+    @LogCoverMethod
     @MeasureExecutionTime
     public UUID create(CreateTaskDto taskDto) {
         Task task = mapper.toTask(taskDto);
@@ -41,7 +41,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @LogStartMethod
     public List<FindTaskDto> findAll(Pageable pageable) {
-        return taskRepository.findTaskDtoAll(pageable);
+        return mapper.toFindTaskDto(taskRepository.findAllJoinFetchUser(pageable));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    @LogAroundMethod
+    @LogCoverMethod
     @MeasureExecutionTime
     public UpdateTaskDto put(UpdateTaskDto taskDto) {
         Task task = mapper.toTask(taskDto);
@@ -65,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    @LogAroundMethod
+    @LogCoverMethod
     @MeasureExecutionTime
     public void deleteById(UUID taskId) {
         taskRepository.deleteById(taskId);

@@ -48,7 +48,6 @@ public class TaskController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     @LogStartMethod
     public Collection<FindTaskResponse> findAll(Pageable pageable) {
         List<FindTaskDto> tasks = taskService.findAll(pageable);
@@ -56,7 +55,6 @@ public class TaskController {
     }
 
     @GetMapping(ID_PATH)
-    @ResponseStatus(HttpStatus.OK)
     @LogStartMethod
     public FindTaskResponse findById(@PathVariable(ID) UUID taskId) {
         FindTaskDto taskDto = taskService.findById(taskId);
@@ -64,7 +62,6 @@ public class TaskController {
     }
 
     @PutMapping(ID_PATH)
-    @ResponseStatus(HttpStatus.OK)
     @LogStartMethod
     public UpdateTaskResponse updateById(@PathVariable(ID) UUID taskId,
                                          @Valid @RequestBody UpdateTaskRequest taskRequest) {
@@ -75,7 +72,6 @@ public class TaskController {
     }
 
     @DeleteMapping(ID_PATH)
-    @ResponseStatus(HttpStatus.OK)
     @LogStartMethod
     public void deleteById(@PathVariable(ID) UUID taskId) {
         taskService.deleteById(taskId);

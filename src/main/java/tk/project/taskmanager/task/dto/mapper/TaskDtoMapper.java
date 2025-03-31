@@ -26,6 +26,12 @@ public interface TaskDtoMapper {
     @Mapping(target = "userId", source = "task.user.id" )
     FindTaskDto toFindTaskDto(Task task);
 
+    default List<FindTaskDto> toFindTaskDto(Collection<Task> tasks) {
+        return tasks.stream()
+                .map(this::toFindTaskDto)
+                .toList();
+    }
+
     FindTaskResponse toFindTaskResponse(FindTaskDto taskDto);
 
     default List<FindTaskResponse> toFindTaskResponse(Collection<FindTaskDto> tasksDto) {

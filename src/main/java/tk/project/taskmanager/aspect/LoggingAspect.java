@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class LoggingAspect {
 
     @Before("@annotation(tk.project.taskmanager.aspect.annotation.LogStartMethod)" +
-            " || @annotation(tk.project.taskmanager.aspect.annotation.LogAroundMethod)")
+            " || @annotation(tk.project.taskmanager.aspect.annotation.LogCoverMethod)")
     public void loggingBefore(JoinPoint joinPoint) {
         log.info("Start method {} with parameters: {}",
                 joinPoint.getSignature().toShortString(), Arrays.toString(joinPoint.getArgs()));
@@ -27,7 +27,7 @@ public class LoggingAspect {
 
     @AfterThrowing(
             pointcut = "(@annotation(tk.project.taskmanager.aspect.annotation.LogException)" +
-                    " || @annotation(tk.project.taskmanager.aspect.annotation.LogAroundMethod))",
+                    " || @annotation(tk.project.taskmanager.aspect.annotation.LogCoverMethod))",
             throwing = "exception"
     )
     public void loggingException(JoinPoint joinPoint, Exception exception) {
@@ -38,7 +38,7 @@ public class LoggingAspect {
 
     @AfterReturning(
             pointcut = "(@annotation(tk.project.taskmanager.aspect.annotation.LogCompleteMethod)" +
-                    " || @annotation(tk.project.taskmanager.aspect.annotation.LogAroundMethod))",
+                    " || @annotation(tk.project.taskmanager.aspect.annotation.LogCoverMethod))",
             returning = "result"
     )
     public void loggingFinishMethod(JoinPoint joinPoint, Object result) {

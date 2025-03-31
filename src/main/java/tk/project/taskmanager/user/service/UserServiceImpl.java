@@ -3,7 +3,7 @@ package tk.project.taskmanager.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tk.project.taskmanager.aspect.annotation.LogAroundMethod;
+import tk.project.taskmanager.aspect.annotation.LogCoverMethod;
 import tk.project.taskmanager.aspect.annotation.MeasureExecutionTime;
 import tk.project.taskmanager.user.User;
 import tk.project.taskmanager.user.UserRepository;
@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    @LogAroundMethod
+    @LogCoverMethod
     @MeasureExecutionTime
     public UUID createUser(CreateUserDto userDto) {
         User user = mapper.toUser(userDto);
