@@ -1,0 +1,29 @@
+services:
+  tm-service:
+    build: .
+    image: tm-service:v1
+    container_name: tm-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - tm-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://tm-db:5432/tm
+      - SPRING_DATASOURCE_USERNAME=tm
+      - SPRING_DATASOURCE_PASSWORD=tm
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
+
+  tm-db:
+    image: postgres:17
+    container_name: postgres-tm-db
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_PASSWORD=tm
+      - POSTGRES_USER=tm
+      - POSTGRES_DB=tm
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
