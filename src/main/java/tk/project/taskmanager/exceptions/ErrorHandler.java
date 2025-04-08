@@ -36,6 +36,12 @@ public class ErrorHandler {
         return createApiError(e, message);
     }
 
+    @ExceptionHandler(EventHandlerNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handlerEventHandlerNotFoundException(final EventHandlerNotFoundException e) {
+        return createApiError(e);
+    }
+
     @ExceptionHandler(TaskNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handlerTaskNotFoundException(final TaskNotFoundException e) {

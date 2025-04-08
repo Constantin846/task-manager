@@ -10,22 +10,26 @@ import tk.project.taskmanager.aspect.annotation.LogStartMethod;
 import tk.project.taskmanager.aspect.annotation.MeasureExecutionTime;
 import tk.project.taskmanager.exceptions.TaskNotFoundException;
 import tk.project.taskmanager.exceptions.UserNotFoundException;
-import tk.project.taskmanager.task.Task;
 import tk.project.taskmanager.task.TaskRepository;
 import tk.project.taskmanager.task.dto.create.CreateTaskDto;
 import tk.project.taskmanager.task.dto.find.FindTaskDto;
 import tk.project.taskmanager.task.dto.mapper.TaskDtoMapper;
 import tk.project.taskmanager.task.dto.update.UpdateTaskDto;
+import tk.project.taskmanager.task.kafka.TaskKafkaProducer;
+import tk.project.taskmanager.task.model.Task;
+import tk.project.taskmanager.task.model.TaskStatus;
 import tk.project.taskmanager.user.User;
 import tk.project.taskmanager.user.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskDtoMapper mapper;
+    private final TaskKafkaProducer taskKafkaProducer;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
 
@@ -58,8 +62,14 @@ public class TaskServiceImpl implements TaskService {
     @LogCoverMethod
     @MeasureExecutionTime
     public UpdateTaskDto put(UpdateTaskDto taskDto) {
+        Optional<TaskStatus> oldTaskStatus = taskRepository.findTaskStatusById(taskDto.getId());
+
         Task task = mapper.toTask(taskDto);
         UUID id = saveTask(task, taskDto.getUserId());
+
+        if (oldTaskStatus.isPresent() && !oldTaskStatus.get().equals(task.getStatus())) {
+            taskKafkaProducer.sendMsgChangeTaskStatus(task.getId(), task.getStatus());
+        }
         return mapper.toUpdateTaskDto(getTaskById(id));
     }
 

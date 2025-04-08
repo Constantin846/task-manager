@@ -19,6 +19,22 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/changelog-main.xml
 
+  mail:
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+
+
+app:
+  kafka:
+    enabled: true
+    bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS:http://localhost:9091}
+    groupId: task-manager
+  recipient.mail: ${RECIPIENT_MAIL}
 
 logging:
   level:

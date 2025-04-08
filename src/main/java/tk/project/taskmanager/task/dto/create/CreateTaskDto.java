@@ -1,6 +1,7 @@
 package tk.project.taskmanager.task.dto.create;
 
 import lombok.Data;
+import tk.project.taskmanager.task.model.TaskStatus;
 
 import java.util.UUID;
 
@@ -12,4 +13,6 @@ public class CreateTaskDto {
     private String description;
 
     private UUID userId;
+
+    private TaskStatus status;
 }

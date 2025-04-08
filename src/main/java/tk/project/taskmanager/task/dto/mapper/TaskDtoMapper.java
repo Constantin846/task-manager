@@ -3,7 +3,6 @@ package tk.project.taskmanager.task.dto.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import tk.project.taskmanager.task.Task;
 import tk.project.taskmanager.task.dto.create.CreateTaskDto;
 import tk.project.taskmanager.task.dto.create.CreateTaskRequest;
 import tk.project.taskmanager.task.dto.find.FindTaskDto;
@@ -11,6 +10,7 @@ import tk.project.taskmanager.task.dto.find.FindTaskResponse;
 import tk.project.taskmanager.task.dto.update.UpdateTaskDto;
 import tk.project.taskmanager.task.dto.update.UpdateTaskRequest;
 import tk.project.taskmanager.task.dto.update.UpdateTaskResponse;
+import tk.project.taskmanager.task.model.Task;
 
 import java.util.Collection;
 import java.util.List;
