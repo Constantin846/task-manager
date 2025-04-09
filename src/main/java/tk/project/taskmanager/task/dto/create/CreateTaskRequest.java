@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import tk.project.taskmanager.task.model.TaskStatus;
 
 import java.util.UUID;
 
@@ -19,4 +20,6 @@ public class CreateTaskRequest {
 
     @NotNull(message = "User id of task must be set")
     private UUID userId;
+
+    private TaskStatus status = TaskStatus.CREATED;
 }
