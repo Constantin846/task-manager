@@ -21,6 +21,6 @@ public class TaskKafkaProducer {
         ChangeTaskStatusEvent event = new ChangeTaskStatusEvent();
         event.setChangeTaskStatusDto(dto);
 
-        kafkaProducer.sendEvent(KafkaProducer.TASK_NOTIFICATIONS_TOPIC, taskId.toString(), event);
+        kafkaProducer.sendEvent(kafkaProducer.getTaskNotificationsTopic(), taskId.toString(), event);
     }
 }

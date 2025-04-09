@@ -12,6 +12,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.CommonErrorHandler;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
@@ -23,18 +24,18 @@ import java.util.Map;
 @Slf4j
 @EnableKafka
 @Configuration
-@ConditionalOnProperty(prefix = "app", name = "kafka.enabled", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "app.kafka", name = "enabled", matchIfMissing = false)
 public class KafkaConsumerConfig {
-    @Value("${app.kafka.bootstrapAddress}")
-    private String SERVER;
-    @Value("${app.kafka.groupId}")
+    @Value("${app.kafka.bootstrap-address}")
+    private String bootstrapAddress;
+    @Value("${app.kafka.group-id}")
     private String groupId;
-    @Value("${app.kafka.session.timeout.ms:15000}")
+    @Value("${app.kafka.session-timeout.ms:15000}")
     private String sessionTimeout;
 
-    private ConsumerFactory<String, EventSource> consumerFactoryString() {
+    private ConsumerFactory<String, EventSource> consumerFactoryEventSource() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, SERVER);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -47,10 +48,11 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, EventSource> kafkaListenerContainerFactoryString() {
+    public ConcurrentKafkaListenerContainerFactory<String, EventSource> kafkaListenerContainerFactoryEventSource() {
         ConcurrentKafkaListenerContainerFactory<String, EventSource> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactoryString());
+        factory.setConsumerFactory(consumerFactoryEventSource());
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         factory.setCommonErrorHandler(errorHandler());
         return factory;
     }

@@ -19,34 +19,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@ConditionalOnProperty(prefix = "app", name = "kafka.enabled", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "app.kafka", name = "enabled", matchIfMissing = false)
 public class KafkaProducerConfig {
-    @Value("${app.kafka.bootstrapAddress}")
-    private String SERVER;
+    @Value("${app.kafka.bootstrap-address}")
+    private String bootstrapAddress;
+    @Value("${app.kafka.task-notifications-topic}")
+    private String taskNotificationsTopic;
 
-    private ProducerFactory<String, EventSource> producerFactoryByteArray() {
+    private ProducerFactory<String, EventSource> producerFactoryEventSource() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, SERVER);
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
+        configProps.put(ProducerConfig.ACKS_CONFIG, "1");
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, EventSource> kafkaTemplateByteArray() {
-        return new KafkaTemplate<>(producerFactoryByteArray());
+    public KafkaTemplate<String, EventSource> kafkaTemplateEventSource() {
+        return new KafkaTemplate<>(producerFactoryEventSource());
     }
 
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, SERVER);
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         return new KafkaAdmin(configs);
     }
 
     @Bean
-    public NewTopic orderCommandTopic() {
-        return new NewTopic("task-notifications-topic", 1, (short) 1);
+    public NewTopic taskNotificationsTopic() {
+        return new NewTopic(taskNotificationsTopic, 1, (short) 1);
     }
 }
