@@ -34,14 +34,20 @@ spring:
 
 app:
   kafka:
-    enabled: true
+    enabled: false
     bootstrap-address: ${KAFKA_BOOTSTRAP_ADDRESS:http://localhost:9091}
     group-id: task-manager
     task-notifications-topic: task-notifications-topic
   recipient.mail: ${RECIPIENT_MAIL}
 
+task-manager:
+  logging:
+    enabled: true
+    recording-level:
+
 logging:
   level:
+    root: INFO
     org.hibernate:
       SQL: TRACE
       type: INFO

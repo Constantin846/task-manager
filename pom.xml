@@ -86,6 +86,13 @@
         </dependency>
 
         <dependency>
+            <groupId>tk.project.taskmanager.logging</groupId>
+            <artifactId>task-manager-logging</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <!-- https://github.com/Constantin846/task-manager-logging -->
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
