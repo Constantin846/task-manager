@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import tk.project.taskmanager.aspect.annotation.LogStartMethod;
+import tk.project.taskmanager.logging.aspect.annotation.LogStartMethod;
 import tk.project.taskmanager.user.dto.CreateUserDto;
 import tk.project.taskmanager.user.dto.CreateUserRequest;
 import tk.project.taskmanager.user.dto.mapper.UserDtoMapper;

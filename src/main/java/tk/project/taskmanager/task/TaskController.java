@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import tk.project.taskmanager.aspect.annotation.LogStartMethod;
+import tk.project.taskmanager.logging.aspect.annotation.LogStartMethod;
 import tk.project.taskmanager.task.dto.create.CreateTaskDto;
 import tk.project.taskmanager.task.dto.create.CreateTaskRequest;
 import tk.project.taskmanager.task.dto.find.FindTaskDto;
