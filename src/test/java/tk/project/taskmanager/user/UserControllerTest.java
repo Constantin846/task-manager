@@ -6,14 +6,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
-import tk.project.taskmanager.TaskManagerTest;
+import tk.project.taskmanager.AbstractBaseIntegrationTest;
 import tk.project.taskmanager.user.dto.CreateUserRequest;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserControllerTest extends TaskManagerTest {
+class UserControllerTest extends AbstractBaseIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import tk.project.taskmanager.TaskManagerTest;
+import tk.project.taskmanager.AbstractBaseIntegrationTest;
 import tk.project.taskmanager.exceptions.ApiError;
 import tk.project.taskmanager.exceptions.TaskNotFoundException;
 import tk.project.taskmanager.exceptions.UserNotFoundException;
+import tk.project.taskmanager.kafka.KafkaProducer;
 import tk.project.taskmanager.task.dto.create.CreateTaskRequest;
 import tk.project.taskmanager.task.dto.find.FindTaskResponse;
 import tk.project.taskmanager.task.dto.update.UpdateTaskRequest;
 import tk.project.taskmanager.task.dto.update.UpdateTaskResponse;
-import tk.project.taskmanager.task.kafka.TaskKafkaProducer;
 import tk.project.taskmanager.task.model.Task;
 import tk.project.taskmanager.task.model.TaskStatus;
 import tk.project.taskmanager.user.User;
@@ -28,6 +28,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class TaskControllerTest extends TaskManagerTest {
+class TaskControllerTest extends AbstractBaseIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -47,7 +49,7 @@ class TaskControllerTest extends TaskManagerTest {
     @Autowired
     private TaskRepository taskRepository;
     @MockBean
-    private TaskKafkaProducer taskKafkaProducer;
+    private KafkaProducer kafkaProducer;
 
     @AfterEach
     void clearDatabase() {
@@ -229,7 +231,8 @@ class TaskControllerTest extends TaskManagerTest {
                 .getContentAsString();
 
         assertEquals(objectMapper.writeValueAsString(expectedTaskResponse), result);
-        verify(taskKafkaProducer).sendMsgChangeTaskStatus(expectedTaskResponse.getId(), expectedTaskResponse.getStatus());
+        verify(kafkaProducer).sendEvent(eq(kafkaProducer.getTaskNotificationsTopic()),
+                eq(expectedTaskResponse.getId().toString()), any());
     }
 
     @Test
@@ -255,7 +258,8 @@ class TaskControllerTest extends TaskManagerTest {
         ApiError apiError = objectMapper.readValue(result, ApiError.class);
 
         assertEquals(UserNotFoundException.class.getSimpleName(), apiError.getExceptionName());
-        verify(taskKafkaProducer, never()).sendMsgChangeTaskStatus(taskId, taskRequest.getStatus());
+        verify(kafkaProducer, never()).sendEvent(eq(kafkaProducer.getTaskNotificationsTopic()),
+                eq(taskId.toString()), any());
     }
 
     @Test

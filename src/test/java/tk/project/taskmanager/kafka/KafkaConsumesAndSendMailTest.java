@@ -4,11 +4,12 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import tk.project.taskmanager.TaskManagerTest;
+import tk.project.taskmanager.AbstractBaseIntegrationTest;
 import tk.project.taskmanager.task.kafka.dto.ChangeTaskStatusDto;
 import tk.project.taskmanager.task.kafka.dto.ChangeTaskStatusEvent;
 import tk.project.taskmanager.task.model.TaskStatus;
@@ -20,11 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
-class KafkaConsumesAndSendMailTest extends TaskManagerTest {
+class KafkaConsumesAndSendMailTest extends AbstractBaseIntegrationTest {
     @Value("${app.recipient.mail}")
     private String defaultRecipientMail;
     @MockBean
     private JavaMailSender mailSender;
+    @Autowired
+    private KafkaProducer kafkaProducer;
 
     @Test
     @DisplayName("Receive massage of changing task status and send mail successfully")
@@ -36,7 +39,7 @@ class KafkaConsumesAndSendMailTest extends TaskManagerTest {
 
         ArgumentCaptor<SimpleMailMessage> captorMsg = ArgumentCaptor.forClass(SimpleMailMessage.class);
 
-        testSendEventsToTopic(event);
+        kafkaProducer.sendEvent(kafkaProducer.getTaskNotificationsTopic(), taskId.toString(), event);
 
         Awaitility.await()
                 .atMost(10, TimeUnit.SECONDS)
